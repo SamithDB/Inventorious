@@ -1,0 +1,9 @@
+ public static void main(String[] args) {
+        try {
+            LookAndFeel l = new WebLookAndFeel();
+            UIManager.setLookAndFeel(l);
+            new homeWindow().setVisible(true);
+        } catch (UnsupportedLookAndFeelException ex) {
+            ex.printStackTrace();
+        }
+    }
