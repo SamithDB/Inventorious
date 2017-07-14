@@ -1,0 +1,1265 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package interfaces;
+
+import java.awt.Color;
+import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import net.java.balloontip.BalloonTip;
+import net.java.balloontip.styles.RoundedBalloonStyle;
+import net.java.balloontip.utils.TimingUtils;
+
+/**
+ *
+ * @author Thusitha
+ */
+public class FinanceSupPayment extends javax.swing.JInternalFrame {
+
+    /**
+     * Creates new form FinanceSupPayment
+     */
+    String frameName;
+
+    public FinanceSupPayment() {
+
+        super("Supplier Payments ",
+                true, //resizable
+                true, //closable
+                false, //maximizable
+                true);//iconifiable
+
+        initComponents();
+
+        getDate();
+        getPayNo();
+        setTableValue();
+        truckRun();
+        bankNames();
+
+        jPanel2.setVisible(false);
+        txtGrnNo.grabFocus();
+        txtSupName.setVisible(false);
+        lblSupName.setVisible(false);
+        txtGrnNo.grabFocus();
+        btnPrint.setVisible(false);
+    }
+
+    public void bankNames() {
+        try {
+            ResultSet r = new JDBC().getData("select distinct(BA.accNo),BA.bankName from bankAccount BA,chequeinfo CI where BA.accNo=CI.accNo and CI.status='not issued'");
+            Vector v = new Vector();
+            v.add("-- Select Bank --");
+            while (r.next()) {
+                v.add(r.getString("bankName"));
+            }
+            cmbboxBank.setModel(new DefaultComboBoxModel(v));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getPayNo() {
+        txtPayNo.setEnabled(false);
+
+        try {
+            ResultSet r = new JDBC().getData("SELECT COUNT(payno) as payCount FROM suppay");
+            if (r.next()) {
+                int count = Integer.parseInt(r.getString("payCount"));
+
+                txtPayNo.setText("SUPPAY" + String.format("%05d", count + 1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setTableValue() {
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+        String ss = sd.format(d);
+        DefaultTableModel dtm = (DefaultTableModel) tblSupPay.getModel();
+        int count = dtm.getRowCount();
+        for (int i = 0; i < count; i++) {
+            dtm.removeRow(0);
+        }
+
+        try {
+            ResultSet r = new JDBC().getData("SELECT * FROM suppay WHERE date='" + ss + "'");
+            while (r.next()) {
+                Vector v = new Vector();
+                v.add(r.getString("payNo"));
+                v.add(r.getString("grnNo"));
+                v.add(r.getString("date"));
+                v.add(r.getString("supId"));
+                v.add(r.getString("type"));
+                v.add(r.getString("Amount"));
+
+                dtm.addRow(v);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    static Date d;
+    String today;
+
+    public void getDate() {
+        Date date = new Date();
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+        today = s.format(date);
+//        txtDate1.setText(today);
+        txtDate.setDate(date);
+        txtDepositDate.setDate(date);
+        d = date;
+    }
+
+    void clear() {
+        getPayNo();
+        txtSupId.setText("");
+        txtSupName.setText("");
+//        txtDate1.setText(today);
+//        txtLastDate.setText("");
+        cmboPayType.setSelectedIndex(0);
+        txtGrnNo.setText("");
+        txtBillAmount.setText("");
+        txtPaidAmount.setText("");
+        txtDueAmount.setText("");
+        cmbboxBank.setSelectedIndex(0);
+        cmbboxAccNo.setSelectedIndex(0);
+        cmbboxbookNo.setSelectedIndex(0);
+        txtChequeNo.setText("");
+        txtPaidAmount.setEnabled(false);
+        cmboPayType.setEnabled(false);
+
+    }
+
+    void truckRun() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                for (int i = -10; i < 441; i++) {
+                    lblTrack.setLocation(i, 28);
+
+                    try {
+                        Thread.sleep(1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                Thread.currentThread().stop();
+            }
+        }).start();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblSupPay = new javax.swing.JTable();
+        btnPrint = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
+        txtDueAmount = new javax.swing.JTextField();
+        cmboPayType = new javax.swing.JComboBox();
+        txtBillAmount = new javax.swing.JTextField();
+        txtPaidAmount = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        lblTrack = new javax.swing.JLabel();
+        txtPayNo = new javax.swing.JTextField();
+        lblSupName = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtGrnNo = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        cmbboxBank = new javax.swing.JComboBox();
+        cmbboxAccNo = new javax.swing.JComboBox();
+        cmbboxbookNo = new javax.swing.JComboBox();
+        jLabel48 = new javax.swing.JLabel();
+        txtChequeNo = new javax.swing.JTextField();
+        txtDepositDate = new com.toedter.calendar.JDateChooser();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        txtSupName = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        txtSupId = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        chBoxSupId = new javax.swing.JCheckBox();
+        txtDate = new com.toedter.calendar.JDateChooser();
+        chBoxDate = new javax.swing.JCheckBox();
+        jLabel8 = new javax.swing.JLabel();
+        cmboxfilterCat = new javax.swing.JComboBox();
+        cmboxFilterOp = new javax.swing.JComboBox();
+        jPanel3 = new javax.swing.JPanel();
+        lblSearch = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finance/track-26_2.png"))); // NOI18N
+        setMinimumSize(new java.awt.Dimension(1366, 733));
+        setNextFocusableComponent(txtSupId);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setNextFocusableComponent(txtSupId);
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblSupPay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tblSupPay.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "<html><font size='5' face='Segoe UI Light'>Payment No</font></html>", "<html><font size='5' face='Segoe UI Light'>GRN No</font></html>", "<html><font size='5' face='Segoe UI Light'>Bill Date</font></html>", "<html><font size='5' face='Segoe UI Light'>Supplier Id</font></html>", "<html><font size='5' face='Segoe UI Light'>Payment Type</font></html>", "<html><font size='5' face='Segoe UI Light'>Paid Amount</font></html>"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblSupPay.setOpaque(false);
+        tblSupPay.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSupPayMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblSupPay);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 364, 1330, 325));
+
+        btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finance/printer-32.png"))); // NOI18N
+        btnPrint.setText("Print");
+        btnPrint.setEnabled(false);
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrintActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnPrint, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 310, 110, -1));
+
+        btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finance/save-32.png"))); // NOI18N
+        btnSave.setText("Save");
+        btnSave.setEnabled(false);
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 310, 110, -1));
+
+        btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finance/rename-32.png"))); // NOI18N
+        btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(1240, 310, 100, -1));
+
+        txtDueAmount.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtDueAmount.setEnabled(false);
+        jPanel1.add(txtDueAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 290, 301, -1));
+
+        cmboPayType.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cmboPayType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "---Select---", "Cash", "Cheque" }));
+        cmboPayType.setEnabled(false);
+        cmboPayType.setNextFocusableComponent(txtDate);
+        cmboPayType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmboPayTypeActionPerformed(evt);
+            }
+        });
+        cmboPayType.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmboPayTypeKeyPressed(evt);
+            }
+        });
+        jPanel1.add(cmboPayType, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 210, 140, -1));
+
+        txtBillAmount.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtBillAmount.setEnabled(false);
+        jPanel1.add(txtBillAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 210, 301, -1));
+
+        txtPaidAmount.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtPaidAmount.setEnabled(false);
+        txtPaidAmount.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                txtPaidAmountMouseEntered(evt);
+            }
+        });
+        txtPaidAmount.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtPaidAmountFocusLost(evt);
+            }
+        });
+        txtPaidAmount.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPaidAmountKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPaidAmountKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPaidAmountKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtPaidAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 250, 301, -1));
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel3.setText("Payment No");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        jLabel1.setText("Supplier Payments");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 50, -1, -1));
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finance/price_tag-64.png"))); // NOI18N
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 0, -1, -1));
+
+        lblTrack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finance/track-64.png"))); // NOI18N
+        jPanel1.add(lblTrack, new org.netbeans.lib.awtextra.AbsoluteConstraints(441, 28, -1, -1));
+
+        txtPayNo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtPayNo.setEnabled(false);
+        txtPayNo.setNextFocusableComponent(txtSupId);
+        jPanel1.add(txtPayNo, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 130, 301, -1));
+
+        lblSupName.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        lblSupName.setText("Supplier Name");
+        jPanel1.add(lblSupName, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 170, -1, -1));
+
+        jLabel21.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel21.setText("Due Amount");
+        jPanel1.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel4.setText("Supplier Id");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 130, -1, -1));
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel6.setText("Payment Type");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 210, -1, -1));
+
+        txtGrnNo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtGrnNo.setToolTipText("");
+        txtGrnNo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtGrnNoFocusLost(evt);
+            }
+        });
+        txtGrnNo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtGrnNoKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtGrnNo, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 170, 301, -1));
+
+        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(0, 0, 0), new java.awt.Color(204, 204, 204)));
+
+        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel15.setText("Bank");
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel16.setText("Acc No");
+
+        jLabel17.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel17.setText("Cheque Book No");
+
+        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finance/cancel-26.png"))); // NOI18N
+        jLabel22.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel22MouseClicked(evt);
+            }
+        });
+
+        cmbboxBank.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cmbboxBank.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-- Select Bank --" }));
+        cmbboxBank.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbboxBankActionPerformed(evt);
+            }
+        });
+
+        cmbboxAccNo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cmbboxAccNo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-- Select Account Number --" }));
+        cmbboxAccNo.setEnabled(false);
+        cmbboxAccNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbboxAccNoActionPerformed(evt);
+            }
+        });
+
+        cmbboxbookNo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cmbboxbookNo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-- Select Cheque Book Number --" }));
+        cmbboxbookNo.setEnabled(false);
+        cmbboxbookNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbboxbookNoActionPerformed(evt);
+            }
+        });
+
+        jLabel48.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel48.setText("Cheque No");
+
+        txtChequeNo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtChequeNo.setToolTipText("");
+        txtChequeNo.setEnabled(false);
+        txtChequeNo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtChequeNoFocusGained(evt);
+            }
+        });
+
+        txtDepositDate.setDateFormatString("yyyy-MM-dd");
+        txtDepositDate.setEnabled(false);
+        txtDepositDate.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtDepositDate.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtDepositDateKeyPressed(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel10.setText("Deposit Date");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel22))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmbboxAccNo, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel48)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtChequeNo, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtDepositDate, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addGap(92, 92, 92)
+                                .addComponent(cmbboxBank, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel17)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbboxbookNo, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(cmbboxBank, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(cmbboxAccNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(cmbboxbookNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel48)
+                    .addComponent(txtChequeNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
+                    .addComponent(txtDepositDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(40, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(485, 127, -1, 230));
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel18.setText("GRN No");
+        jPanel1.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, -1, -1));
+
+        jLabel20.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel20.setText("Paying Amount");
+        jPanel1.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, -1, -1));
+
+        txtSupName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jPanel1.add(txtSupName, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 170, 230, -1));
+
+        jLabel19.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel19.setText("Bill Amount");
+        jPanel1.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, -1, -1));
+
+        txtSupId.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtSupId.setEnabled(false);
+        txtSupId.setNextFocusableComponent(cmboPayType);
+        txtSupId.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtSupIdFocusLost(evt);
+            }
+        });
+        txtSupId.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtSupIdPropertyChange(evt);
+            }
+        });
+        jPanel1.add(txtSupId, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 130, 230, -1));
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel7.setText("Date");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 250, -1, -1));
+
+        chBoxSupId.setText("Edit");
+        chBoxSupId.setOpaque(false);
+        chBoxSupId.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chBoxSupIdMouseClicked(evt);
+            }
+        });
+        chBoxSupId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chBoxSupIdActionPerformed(evt);
+            }
+        });
+        jPanel1.add(chBoxSupId, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 130, -1, -1));
+
+        txtDate.setDateFormatString("yyyy-MM-dd");
+        txtDate.setEnabled(false);
+        jPanel1.add(txtDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 250, 140, -1));
+
+        chBoxDate.setText("Edit");
+        chBoxDate.setOpaque(false);
+        chBoxDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chBoxDateActionPerformed(evt);
+            }
+        });
+        jPanel1.add(chBoxDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 250, -1, -1));
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel8.setText("Filter By");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, -1, -1));
+
+        cmboxfilterCat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--", "GRN No", "Date", "Supplier Id", "Payment Type" }));
+        cmboxfilterCat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmboxfilterCatActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cmboxfilterCat, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 340, 140, -1));
+
+        cmboxFilterOp.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
+        cmboxFilterOp.setEnabled(false);
+        cmboxFilterOp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmboxFilterOpActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cmboxFilterOp, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 340, 120, -1));
+
+        lblSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finance/google_web_search-48.png"))); // NOI18N
+        lblSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblSearch.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblSearchMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblSearchMouseEntered(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(lblSearch)
+                .addGap(242, 242, 242))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1300, 30, 50, 40));
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI Light", 0, 16)); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/background.png"))); // NOI18N
+        jLabel9.setNextFocusableComponent(txtSupId);
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1350, 700));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1350, 700));
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void cmboPayTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmboPayTypeActionPerformed
+        comboPay();
+    }//GEN-LAST:event_cmboPayTypeActionPerformed
+
+    private void jLabel22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel22MouseClicked
+
+        jPanel2.setVisible(false);
+        cmboPayType.setSelectedIndex(0);
+    }//GEN-LAST:event_jLabel22MouseClicked
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+
+        getPayNo();
+        DefaultTableModel dtm = (DefaultTableModel) tblSupPay.getModel();
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+        String ss = s.format(txtDate.getDate());
+
+        if (cmboPayType.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Please select payment type");
+            cmboPayType.grabFocus();
+        } else if (cmboPayType.getSelectedIndex() == 1) {
+            try {
+                ResultSet r = new JDBC().getData("SELECT * FROM assets where description='cash'");
+                if (r.next()) {
+                    double Currentamount = Double.parseDouble(r.getString("amount"));
+                    double amount = Double.parseDouble(String.valueOf(txtPaidAmount.getText()));
+                    if (Currentamount < amount) {
+                        JOptionPane.showMessageDialog(this, "Sorry, Cash balance is not enough to pay this amount.");
+                        clear();
+                    } else {
+                        String des = "";
+                        if (amount > 0) {
+                            des = "Expenses";
+                            Currentamount -= amount;
+                        } else if (amount < 0) {
+                            des = "Income";
+                            Currentamount -= amount;
+                        }
+                        System.out.println(des);
+                        new JDBC().putData("INSERT INTO cashBook(date,description,type,amount,currentAmount) VALUES('" + ss + "','" + txtSupId.getText() + "','" + des + "','" + txtPaidAmount.getText() + "','" + Currentamount + "')");
+                        new JDBC().putData("UPDATE assets SET amount='" + Currentamount + "' WHERE description='cash'");
+                        new JDBC().putData("INSERT INTO suppay VALUES('" + txtPayNo.getText() + "','" + ss + "','" + txtSupId.getText() + "','" + cmboPayType.getSelectedItem() + "','" + txtGrnNo.getText() + "','" + txtPaidAmount.getText() + "')");
+                        JOptionPane.showMessageDialog(this, "Record has been saved");
+                        clear();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sorry, Cash balance is not enough to pay this amount.");
+                    clear();
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else if (cmboPayType.getSelectedIndex() == 2) {
+            try {
+
+                SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+                String issueDate = sd.format(txtDate.getDate());
+                String depositDate = sd.format(txtDepositDate.getDate());
+                System.out.println(txtChequeNo.getText());
+
+                ResultSet r = new JDBC().getData("select BA.accNo,BA.balance,CI.chequeNo,CI.status FROM bankAccount BA, chequeinfo CI WHERE BA.accNo=CI.accNo and BA.accNo='" + cmbboxAccNo.getSelectedItem() + "' and CI.chequeNo='" + txtChequeNo.getText() + "'");
+                while (r.next()) {
+                    double balance = Double.parseDouble(r.getString("BA.balance")) - Double.parseDouble(txtPaidAmount.getText());
+                    if (-50000 < balance) {
+                        new JDBC().putData("INSERT INTO chequetrans VALUES('" + txtChequeNo.getText() + "','" + cmbboxAccNo.getSelectedItem() + "','" + cmbboxBank.getSelectedItem() + "','" + issueDate + "','" + depositDate + "','" + "Crossed Cheque" + "','" + txtSupId.getText() + "','" + txtPaidAmount.getText() + "','"+txtGrnNo.getText()+"')");
+                        new JDBC().putData("UPDATE bankAccount SET balance='" + String.valueOf(balance) + "' WHERE accNo='" + cmbboxAccNo.getSelectedItem() + "'");
+                        new JDBC().putData("UPDATE chequeinfo SET status='" + "issued" + "' WHERE chequeNo='" + txtChequeNo.getText() + "'");
+                        new JDBC().putData("INSERT INTO suppay VALUES('" + txtPayNo.getText() + "','" + ss + "','" + txtSupId.getText() + "','" + cmboPayType.getSelectedItem() + "','" + txtGrnNo.getText() + "','" + txtPaidAmount.getText() + "')");
+                        BalloonTip tip = new BalloonTip(btnSave, "Record has been saved", style, false);
+                        tip.setVisible(true);
+                        TimingUtils.showTimedBalloon(tip, 3000);
+                        clear();
+                        System.gc();
+
+                    } else {
+                        JOptionPane.showMessageDialog(this, "account limit is exceed.");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            clear();
+        }
+        getPayNo();
+        clear();
+        txtGrnNo.grabFocus();
+        setTableValue();
+
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+
+        clear();
+        txtGrnNo.grabFocus();
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void txtSupIdFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSupIdFocusLost
+
+
+    }//GEN-LAST:event_txtSupIdFocusLost
+
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_btnPrintActionPerformed
+
+    private void txtPaidAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPaidAmountKeyPressed
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (txtGrnNo.equals("")) {
+                JOptionPane.showMessageDialog(this, "You don't have entered GRN No. Please enter the GRN No");
+                txtGrnNo.grabFocus();
+            } else if (txtPaidAmount.getText().equals("") || Integer.valueOf(txtPaidAmount.getText()) == 0) {
+                BalloonTip tip = new BalloonTip(txtPaidAmount, "Please enter the paying amount", style, false);
+                tip.setVisible(true);
+                TimingUtils.showTimedBalloon(tip, 3000);
+                txtPaidAmount.setText("");
+                txtPaidAmount.grabFocus();
+
+            } else {
+                double due = Double.parseDouble(txtDueAmount.getText());
+                double paying = Double.parseDouble(txtPaidAmount.getText());
+
+                if (paying > due) {
+                    JOptionPane.showMessageDialog(this, "You cannot exceed due amount");
+                    txtPaidAmount.setText(txtDueAmount.getText());
+                    cmboPayType.grabFocus();
+                } else {
+                    cmboPayType.grabFocus();
+                }
+
+            }
+        }
+    }//GEN-LAST:event_txtPaidAmountKeyPressed
+
+    private void txtPaidAmountKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPaidAmountKeyReleased
+
+        if (evt.getKeyChar() >= 58 && evt.getKeyChar() <= 127) {
+            BalloonTip tip = new BalloonTip(txtPaidAmount, "Please enter valid number", style, false);
+            tip.setVisible(true);
+            TimingUtils.showTimedBalloon(tip, 3000);
+        }
+    }//GEN-LAST:event_txtPaidAmountKeyReleased
+
+    private void txtSupIdPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtSupIdPropertyChange
+
+        try {
+            ResultSet r = new JDBC().getData("SELECT sup_name FROM suppliers where sup_id='" + txtSupId.getText() + "'");
+            if (r.next()) {
+                txtSupName.setText(r.getString("sup_name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_txtSupIdPropertyChange
+
+    private void chBoxSupIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chBoxSupIdActionPerformed
+
+
+    }//GEN-LAST:event_chBoxSupIdActionPerformed
+
+    private void chBoxDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chBoxDateActionPerformed
+
+        if (Home.level.equals("admin")) {
+            if (chBoxDate.isSelected()) {
+                txtDate.setEnabled(true);
+            } else {
+                txtDate.setEnabled(false);
+            }
+        } else {
+            chBoxDate.setSelected(false);
+            String message = "<html><font color='White' face ='Segoe UI Light' size='6'>Please login as admin to edit this value.</font></html>";
+            RoundedBalloonStyle style = new RoundedBalloonStyle(10, 5, Color.darkGray, Color.darkGray);
+            BalloonTip tip = new BalloonTip(chBoxDate, message, style, true);
+            tip.setVisible(true);
+            TimingUtils.showTimedBalloon(tip, 3000);
+        }
+
+    }//GEN-LAST:event_chBoxDateActionPerformed
+
+    private void cmboPayTypeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmboPayTypeKeyPressed
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            comboPay();
+        }
+    }//GEN-LAST:event_cmboPayTypeKeyPressed
+
+    String filterType;
+    private void cmboxfilterCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmboxfilterCatActionPerformed
+
+        DefaultTableModel dtm = (DefaultTableModel) tblSupPay.getModel();
+        cmboxFilterOp.setEnabled(true);
+        if (cmboxfilterCat.getSelectedIndex() == 0) {
+            cmboxFilterOp.addItem("--Select--");
+            cmboxFilterOp.setSelectedItem("--Select--");
+            cmboxFilterOp.setEnabled(false);
+            int a = dtm.getRowCount();
+            for (int i = 0; i < a; i++) {
+                dtm.removeRow(0);
+            }
+            setTableValue();
+
+        } else if (cmboxfilterCat.getSelectedIndex() == 1) {
+            Vector v = new Vector();
+            try {
+                filterType = "grnNo";
+                ResultSet r = new JDBC().getData("SELECT DISTINCT(grnNo) FROM suppay");
+                while (r.next()) {
+                    v.add(r.getString("grnNo"));
+                }
+                cmboxFilterOp.setModel(new DefaultComboBoxModel(v));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (cmboxfilterCat.getSelectedIndex() == 2) {
+            Vector v = new Vector();
+            try {
+                filterType = "date";
+                ResultSet r = new JDBC().getData("SELECT DISTINCT(date) FROM suppay");
+                while (r.next()) {
+                    v.add(r.getString("date"));
+                }
+                cmboxFilterOp.setModel(new DefaultComboBoxModel(v));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (cmboxfilterCat.getSelectedIndex() == 3) {
+            Vector v = new Vector();
+            try {
+                filterType = "supId";
+                ResultSet r = new JDBC().getData("SELECT DISTINCT(supId) FROM suppay");
+                while (r.next()) {
+                    v.add(r.getString("supId"));
+                }
+                cmboxFilterOp.setModel(new DefaultComboBoxModel(v));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (cmboxfilterCat.getSelectedIndex() == 4) {
+            Vector v = new Vector();
+            try {
+                filterType = "type";
+                ResultSet r = new JDBC().getData("SELECT DISTINCT(type) FROM suppay");
+                while (r.next()) {
+                    v.add(r.getString("type"));
+                }
+                cmboxFilterOp.setModel(new DefaultComboBoxModel(v));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_cmboxfilterCatActionPerformed
+
+    private void cmboxFilterOpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmboxFilterOpActionPerformed
+
+        DefaultTableModel dtm = (DefaultTableModel) tblSupPay.getModel();
+        int a = dtm.getRowCount();
+        for (int i = 0; i < a; i++) {
+            dtm.removeRow(0);
+        }
+        System.out.println(a);
+        try {
+            ResultSet r = new JDBC().getData("SELECT * FROM suppay WHERE " + filterType + "='" + cmboxFilterOp.getSelectedItem() + "' order by payNo desc ");
+            while (r.next()) {
+                Vector v = new Vector();
+                v.add(r.getString("payNo"));
+                v.add(r.getString("grnNo"));
+                v.add(r.getString("date"));
+                v.add(r.getString("supId"));
+                v.add(r.getString("type"));
+                v.add(r.getString("amount"));
+                dtm.addRow(v);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_cmboxFilterOpActionPerformed
+
+    private void cmbboxBankActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbboxBankActionPerformed
+
+        try {
+            ResultSet r = new JDBC().getData("SELECT DISTINCT(BA.accNo) FROM chequeinfo CI,bankAccount BA WHERE BA.accNo=CI.accNo AND CI.status='not issued' AND BA.bankName='" + cmbboxBank.getSelectedItem() + "'");
+            Vector v = new Vector();
+            v.add("-- Select Account Number --");
+            if (r.next()) {
+                v.add(r.getString("accNo"));
+                cmbboxAccNo.setEnabled(true);
+            } else {
+                BalloonTip tip = new BalloonTip(cmbboxBank, "Cannot find any current account no.", style, true);
+                TimingUtils.showTimedBalloon(tip, 3000);
+                tip.setVisible(true);
+            }
+            cmbboxAccNo.setModel(new DefaultComboBoxModel(v));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_cmbboxBankActionPerformed
+
+    private void cmbboxAccNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbboxAccNoActionPerformed
+
+        try {
+            ResultSet r = new JDBC().getData("SELECT bookNo FROM chequeinfo WHERE accNo='" + cmbboxAccNo.getSelectedItem() + "' AND status='not issued'");
+            Vector v = new Vector();
+            v.add("-- Select Cheque Book Number --");
+            if (r.next()) {
+                v.add(r.getString("bookNo"));
+                cmbboxbookNo.setEnabled(true);
+            } else {
+                BalloonTip tip = new BalloonTip(cmbboxbookNo, "Cannot find any cheque existing book no", style, true);
+                tip.setVisible(true);
+                TimingUtils.showTimedBalloon(tip, 3000);
+            }
+            cmbboxbookNo.setModel(new DefaultComboBoxModel(v));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_cmbboxAccNoActionPerformed
+
+    private void cmbboxbookNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbboxbookNoActionPerformed
+
+        try {
+            ResultSet r = new JDBC().getData("SELECT chequeNo FROM chequeinfo WHERE bookNo='" + cmbboxbookNo.getSelectedItem() + "' AND status='" + "not issued" + "'");
+            if (r.first()) {
+                txtChequeNo.setText(r.getString("chequeNo"));
+                txtDepositDate.setEnabled(true);
+
+            } else {
+                BalloonTip tip = new BalloonTip(txtChequeNo, "Cannot find any cheque Number", style, false);
+                tip.setVisible(true);
+                TimingUtils.showTimedBalloon(tip, 3000);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_cmbboxbookNoActionPerformed
+
+    private void txtDepositDateKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDepositDateKeyPressed
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            btnSave.setEnabled(true);
+            btnSave.grabFocus();
+        }
+    }//GEN-LAST:event_txtDepositDateKeyPressed
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+
+        System.gc();
+//        homeTest.jComboBox1.removeItem("Supplier Payments");
+    }//GEN-LAST:event_formInternalFrameClosing
+
+    private void chBoxSupIdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chBoxSupIdMouseClicked
+
+        if (Home.level.equals("admin")) {
+            if (chBoxSupId.isSelected()) {
+                txtSupId.setEnabled(true);
+                txtSupName.setVisible(true);
+                lblSupName.setVisible(true);
+            } else {
+                txtSupId.setEnabled(false);
+                txtSupName.setVisible(false);
+                lblSupName.setVisible(false);
+            }
+        } else {
+            chBoxSupId.setSelected(false);
+            String message = "<html><font color='White' face ='Segoe UI Light' size='6'>Please login as admin to edit this value.</font></html>";
+            RoundedBalloonStyle style = new RoundedBalloonStyle(10, 5, Color.darkGray, Color.darkGray);
+            BalloonTip tip = new BalloonTip(chBoxSupId, message, style, true);
+            tip.setVisible(true);
+            TimingUtils.showTimedBalloon(tip, 3000);
+
+        }
+    }//GEN-LAST:event_chBoxSupIdMouseClicked
+
+    private void txtChequeNoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtChequeNoFocusGained
+
+        btnSave.setEnabled(true);
+        btnClear.setEnabled(true);
+        btnPrint.setEnabled(true);
+    }//GEN-LAST:event_txtChequeNoFocusGained
+
+    private void txtGrnNoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtGrnNoKeyPressed
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            if (txtGrnNo.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "This field cannot be empty. Please enter valid GRN No\n Ex:GRN00001");
+                txtGrnNo.grabFocus();
+
+            } else if (txtGrnNo.getText().length() >= 4 && txtGrnNo.getText().substring(0, 3).equals("GRN")) {
+                try {
+                    ResultSet r = new JDBC().getData("SELECT * FROM grn_info WHERE grn_no='" + txtGrnNo.getText() + "'");
+                    ResultSet r1 = new JDBC().getData("SELECT sum(amount) AS paidAmount FROM suppay WHERE grnNo='" + txtGrnNo.getText() + "'");
+                    double due;
+                    if (r1.next()) {
+                    }
+
+                    if (r.next()) {
+                        txtBillAmount.setText(r.getString("sub_total"));
+                        txtSupId.setText(r.getString("sup_id"));
+                        System.out.println(r1.getString("paidAmount"));
+
+                        if (String.valueOf(r1.getString("paidAmount")).equals("null")) {
+                            JOptionPane.showMessageDialog(this, "You don't have completed any payment to above GRN No.");
+                            txtDueAmount.setText(r.getString("sub_total"));
+                            txtPaidAmount.setEnabled(true);
+                            cmboPayType.setEnabled(true);
+                            txtPaidAmount.grabFocus();
+
+                        } else {
+                            due = Double.parseDouble(r.getString("sub_total")) - Double.parseDouble(r1.getString("paidAmount"));
+                            txtDueAmount.setText(String.valueOf(due) + "0");
+                            txtPaidAmount.setEnabled(true);
+                            cmboPayType.setEnabled(true);
+                            txtPaidAmount.grabFocus();
+                            if (due == 0) {
+                                int i = JOptionPane.showConfirmDialog(null, "You have completed this order.\n Do you want check complete details?");
+//                                                                clear();
+                                txtGrnNo.grabFocus();
+                                System.out.println(i);
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "You entered GRN No is not currently available.Please enter another GRN No.");
+                        txtGrnNo.grabFocus();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "You entered GRN No not in correct format. Please check and type again.\n E:GRN1");
+                txtGrnNo.grabFocus();
+
+            }
+
+        }
+    }//GEN-LAST:event_txtGrnNoKeyPressed
+
+    private void txtGrnNoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtGrnNoFocusLost
+
+    }//GEN-LAST:event_txtGrnNoFocusLost
+
+    private void txtPaidAmountKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPaidAmountKeyTyped
+
+        char c = evt.getKeyChar();
+
+        String s = txtPaidAmount.getText();
+        if (s.length() >= 1) {
+            if (c == '-') {
+                evt.consume();
+            }
+        }
+        if (!(c >= '0' && c <= '9' || c == '-')) {
+            evt.consume();
+        }
+
+    }//GEN-LAST:event_txtPaidAmountKeyTyped
+
+    RoundedBalloonStyle style = new RoundedBalloonStyle(10, 5, Color.darkGray, Color.darkGray);
+
+    private void txtPaidAmountMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtPaidAmountMouseEntered
+
+        String text = "<html>\n"
+                + "	<font face='Iskoola Pota' color='white' size='3'>\n"
+                + "		ගෙවීමට බලාපොරොත්තු වන මුදල සදහන් කරන්න		\n"
+                + "	</font>\n"
+                + "</html>";
+
+        if (txtPaidAmount.isEnabled()) {
+            BalloonTip tip = new BalloonTip(txtPaidAmount, text, style, false);
+            tip.setVisible(true);
+            TimingUtils.showTimedBalloon(tip, 2000);
+
+        }
+
+        System.gc();
+    }//GEN-LAST:event_txtPaidAmountMouseEntered
+
+    private void txtPaidAmountFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPaidAmountFocusLost
+
+        if (txtGrnNo.equals("")) {
+            if (txtPaidAmount.getText().equals("") && txtPaidAmount.isEnabled()) {
+                txtPaidAmount.grabFocus();
+                BalloonTip tip = new BalloonTip(txtPaidAmount, "<html><font color='White'>This field cannot be empty</font></html>", style, false);
+                tip.setVisible(true);
+                TimingUtils.showTimedBalloon(tip, 3000);
+            }
+
+        }
+    }//GEN-LAST:event_txtPaidAmountFocusLost
+
+    private void tblSupPayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSupPayMouseClicked
+
+        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+            int i = JOptionPane.showConfirmDialog(this, "Do you want to edit this record?", "Caution", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if (i == 0) {
+
+            }
+        }
+    }//GEN-LAST:event_tblSupPayMouseClicked
+
+    private void lblSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSearchMouseClicked
+
+        Vector v = new Vector();
+        try {
+            ResultSet r = new JDBC().getData("SELECT sup_id FROM suppliers ");
+            while (r.next()) {
+                v.add(r.getString("sup_id"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JComboBox supCombo = new JComboBox(v);
+        JLabel a = new JLabel("Select Supplier ID");
+        JPanel pnl = new JPanel();
+        pnl.setSize(100, 70);
+        pnl.add(a);
+        pnl.add(supCombo);
+        int i = JOptionPane.showConfirmDialog(this, pnl, "Select Supplier ID", JOptionPane.OK_CANCEL_OPTION);
+        if (i == 0) {
+            System.out.println(supCombo.getSelectedItem());
+            suppaySummary summary = new suppaySummary(supCombo.getSelectedItem().toString(),txtGrnNo.getText());
+            Home.jDesktopPane2.add(summary);
+            summary.setVisible(true);
+        }
+
+//        System.out.println(supNo);
+    }//GEN-LAST:event_lblSearchMouseClicked
+
+    private void lblSearchMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSearchMouseEntered
+
+        BalloonTip tip = new BalloonTip(lblSearch, "<html> <font color='White'> Click on this to view summary </font> </html>", style, false);
+        tip.setVisible(true);
+        TimingUtils.showTimedBalloon(tip, 2000);
+    }//GEN-LAST:event_lblSearchMouseEntered
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnPrint;
+    private javax.swing.JButton btnSave;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JCheckBox chBoxDate;
+    private javax.swing.JCheckBox chBoxSupId;
+    private javax.swing.JComboBox cmbboxAccNo;
+    private javax.swing.JComboBox cmbboxBank;
+    private javax.swing.JComboBox cmbboxbookNo;
+    private javax.swing.JComboBox cmboPayType;
+    private javax.swing.JComboBox cmboxFilterOp;
+    private javax.swing.JComboBox cmboxfilterCat;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel48;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblSearch;
+    private javax.swing.JLabel lblSupName;
+    private javax.swing.JLabel lblTrack;
+    public static javax.swing.JTable tblSupPay;
+    private javax.swing.JTextField txtBillAmount;
+    private javax.swing.JTextField txtChequeNo;
+    private com.toedter.calendar.JDateChooser txtDate;
+    private com.toedter.calendar.JDateChooser txtDepositDate;
+    private javax.swing.JTextField txtDueAmount;
+    private javax.swing.JTextField txtGrnNo;
+    private javax.swing.JTextField txtPaidAmount;
+    private javax.swing.JTextField txtPayNo;
+    private javax.swing.JTextField txtSupId;
+    private javax.swing.JTextField txtSupName;
+    // End of variables declaration//GEN-END:variables
+
+    void comboPay() throws HeadlessException {
+        if (cmboPayType.getSelectedItem().equals("Cheque")) {
+            jPanel2.setVisible(true);
+            txtChequeNo.setEnabled(true);
+            txtChequeNo.grabFocus();
+
+        } else if (cmboPayType.getSelectedItem().equals("Cash")) {
+            jPanel2.setVisible(false);
+            btnClear.setEnabled(true);
+            btnPrint.setEnabled(true);
+            btnSave.setEnabled(true);
+            btnSave.grabFocus();
+
+        } else {
+            jPanel2.setVisible(false);
+            cmboPayType.grabFocus();
+            btnSave.setEnabled(false);
+            btnPrint.setEnabled(false);
+        }
+    }
+}
